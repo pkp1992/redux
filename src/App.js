@@ -1,28 +1,57 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Fragment, PureComponent } from "react";
+import { addUser, removeAllUsers } from "./actionCreator/users";
+import { connect } from "react-redux";
+// import PropTypes from "prop-types";
 
-class App extends Component {
+let id = 0;
+
+class App extends PureComponent {
   render() {
+    const { users, addUser, removeAllUsers } = this.props;
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Fragment>
+        <button onClick={() => addUser(id++, `Alexandr ${id}`)}>
+          Add User
+        </button>
+        <button onClick={removeAllUsers}>Delete All Users</button>
+        {users.map(user => (
+          <p key={user.id}>{`User: ${user.name}, id: ${user.id}`}</p>
+        ))}
+      </Fragment>
     );
   }
 }
 
-export default App;
+// const App = props => {
+//   const { users, addUser, removeAllUsers } = props;
+//   console.log(props);
+
+//   return (
+//     <Fragment>
+//       <button onClick={() => addUser(id++, `Alexandr ${id}`)}>Add User</button>
+//       <button onClick={removeAllUsers}>Delete All Users</button>
+//       {users.map(user => (
+//         <p key={user.id}>{`User: ${user.name}, id: ${user.id}`}</p>
+//       ))}
+//     </Fragment>
+//   );
+// };
+
+const mapStateToProps = state => ({
+  users: state.users
+});
+
+const mapDispatchToProps = dispatch => ({
+  addUser: (id, name) => dispatch(addUser(id, name)),
+  removeAllUsers: () => dispatch(removeAllUsers())
+});
+
+// const mapDispatchToProps = {
+//   addUser,
+//   removeAllUsers
+// }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
